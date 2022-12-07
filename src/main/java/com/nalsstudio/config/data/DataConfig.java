@@ -1,4 +1,4 @@
-package com.nalsstudio.config;
+package com.nalsstudio.config.data;
 
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +66,7 @@ public class DataConfig {
 	        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 	        em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
 	        em.setDataSource(dataSource);
-	        String[] domainlist = new String[]{"com.smsb.baedal.market.domain", "com.smsb.baedal.cmessage.domain"};
+	        String[] domainlist = new String[]{"com.nalsstudio.domain"};
 	        em.setPackagesToScan(domainlist);
 
 
