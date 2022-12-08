@@ -20,12 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	//@Autowired DataSource datasource;
-	@Autowired UserDetailsService userDetailservice;
-	
-	@Bean
-	protected PasswordEncoder encoder() {
-		return new BCryptPasswordEncoder();
-	}
+	@Autowired
+	UserDetailsService userDetailservice;
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -43,10 +39,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         http.authorizeRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .antMatchers("/").permitAll()
-                .antMatchers("/user/**").permitAll()
-//                .antMatchers("/").access("hasRole('ROLE_USER')")
-                .antMatchers("/api/**").access("hasRole('ROLE_USER')")
-                .antMatchers("/commonApi/**").access("permitAll")
+                .antMatchers("/api/user/**").permitAll()
+//                .antMatchers("/").access("hasRole('ROLE_USER')") SpEL
+                .antMatchers("/api/admin/**").access("hasRole('ROLE_ADMIN')")
+                .antMatchers("/api/customer/**").access("hasRole('ROLE_USER')")
+                .antMatchers("/api/common/**").permitAll()
                 .antMatchers("/**").access("permitAll")
                 .anyRequest().authenticated()
                 .and().httpBasic();
@@ -79,7 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		/* service logic process */
 		auth
 			.userDetailsService(userDetailservice)
-			.passwordEncoder(encoder());
+			.passwordEncoder(new BCryptPasswordEncoder());
 		
 		
 		

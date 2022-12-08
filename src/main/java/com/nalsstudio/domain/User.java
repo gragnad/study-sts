@@ -3,10 +3,16 @@ package com.nalsstudio.domain;
 import java.util.Arrays;
 import java.util.Collection;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,13 +28,14 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@Table(name = "users")
 @RequiredArgsConstructor
 @NoArgsConstructor(access=AccessLevel.PRIVATE, force=true)
 public class User implements UserDetails {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	final String username;
@@ -39,20 +46,13 @@ public class User implements UserDetails {
 	final String state;
 	final String zip;
 	final String phoneNumber;
+	String enabled;
 	
-	
-	public User(String username, String password, String fullname, String street, String city, String state,
-			String zip, String phone) {
-		this.username = username;
-		this.password = password;
-		this.fullname = fullname;
-		this.street = street;
-		this.city = city;
-		this.state = state;
-		this.zip = zip;
-		this.phoneNumber = phone;
+	@PrePersist
+	public void enabled() {
+		this.enabled = "1";
 	}
-
+	
 	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub
@@ -91,7 +91,8 @@ public class User implements UserDetails {
 		return true;
 	}
 	
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "username", insertable = false, updatable = false)
+	public Authorities authorities;
 	
-	
-
 }
